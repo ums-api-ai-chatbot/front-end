@@ -1,7 +1,7 @@
 <template>
     <div class="chat-container">
         <div class="model-selector">
-            <label for="model">모델 선택:</label>
+            <label for="model">모델 선택 !:</label>
             <select v-model="selectedModel" id="model">
                 <option value="basic">기본 모델</option>
                 <option value="friendly">친절한 모델</option>
