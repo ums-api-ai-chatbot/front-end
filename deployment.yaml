@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-vue-app
+  labels:
+    app: my-vue-app
+spec:
+  replicas: 1  # 원하는 복제본 수
+  selector:
+    matchLabels:
+      app: my-vue-app
+  template:
+    metadata:
+      labels:
+        app: my-vue-app
+    spec:
+      containers:
+        - name: my-vue-app
+          image: howon/vue-new:latest  # 사용할 Docker 이미지
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080  # 애플리케이션의 포트
