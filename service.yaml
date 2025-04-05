@@ -7,6 +7,6 @@ spec:
   ports:
     - port: 8080  # 서비스 포트
       targetPort: 8080  # 컨테이너 포트
-      nodePort: 35000  # 원하는 노드 포트 (30000~32767)
+      nodePort: 32767  # 원하는 노드 포트 (30000~32767)
   selector:
     app: my-vue-app  # Deployment와 연결하기 위한 레이블
