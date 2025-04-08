@@ -71,7 +71,8 @@ export default {
             }
             
             const data = await response.json();
-            return data.generate; // 여기에 API 응답에서 봇 메시지를 적절히 추출하는 로직을 입력하세요
+            console.log("data",data)
+            return data.answer; // 여기에 API 응답에서 봇 메시지를 적절히 추출하는 로직을 입력하세요
         },
         // 메시지 추가하는 헬퍼 메서드
         addMessage(text, type) {
