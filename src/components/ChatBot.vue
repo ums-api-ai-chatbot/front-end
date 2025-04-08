@@ -55,7 +55,7 @@ export default {
             // 여기에 실제 API 엔드포인트를 입력하세요
             // const apiUrl = 'http://211.254.213.18:30000/items';
             const apiUrl = 'http://211.254.213.18:30000/question';
-
+            console.log("userMessage",userMessage)
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
