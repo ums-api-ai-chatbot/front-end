@@ -54,7 +54,7 @@ export default {
         async getBotResponse(userMessage) {
             // 여기에 실제 API 엔드포인트를 입력하세요
             // const apiUrl = 'http://211.254.213.18:30000/items';
-            const apiUrl = 'http://211.254.213.18:30000/items';
+            const apiUrl = 'http://211.254.213.18:30000/question';
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -62,7 +62,7 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    question: userMessage
+                    query: userMessage
                 }),
             });
 
