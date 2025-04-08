@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: my-vue-app
-          image: howon/vue-new:b77ac0b5d475cf5f851957dd3b60c57a178737a5
+          image: howon/vue-new:b5e2e64dbf164f552b7a664de264dd2884a422af
           imagePullPolicy: Always
           ports:
             - containerPort: 8080  # 애플리케이션의 포트
