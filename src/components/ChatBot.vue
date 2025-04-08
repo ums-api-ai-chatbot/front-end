@@ -53,7 +53,8 @@ export default {
         // API를 호출하여 봇의 응답을 가져오는 메서드
         async getBotResponse(userMessage) {
             // 여기에 실제 API 엔드포인트를 입력하세요
-            const apiUrl = 'https://your-api-endpoint.com/chatbot';
+            // const apiUrl = 'http://211.254.213.18:30000/items';
+            const apiUrl = 'http://127.0.0.1:8000/items';
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -61,17 +62,16 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    model: this.selectedModel,
-                    message: userMessage
+                    question: userMessage
                 }),
             });
 
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-
+            
             const data = await response.json();
-            return data.reply; // 여기에 API 응답에서 봇 메시지를 적절히 추출하는 로직을 입력하세요
+            return data.generate; // 여기에 API 응답에서 봇 메시지를 적절히 추출하는 로직을 입력하세요
         },
         // 메시지 추가하는 헬퍼 메서드
         addMessage(text, type) {
