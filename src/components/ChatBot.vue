@@ -1,7 +1,7 @@
 <template>
     <div class="chat-container">
         <div class="model-selector">
-            <label for="model">모델 선택 !:</label>
+            <label for="model">모델 선택 : </label>
             <select v-model="selectedModel" id="model">
                 <option value="basic">기본 모델</option>
                 <option value="friendly">친절한 모델</option>
@@ -10,12 +10,22 @@
         </div>
         <div class="chat-box" ref="chatBox">
             <div v-for="msg in messages" :key="msg.id" class="message" :class="msg.type">
-                {{ msg.text }}
+                <pre>{{ msg.text }}</pre>
             </div>
+            <div id="spinner" v-if="isLoading"></div>
         </div>
         <div class="input-area">
-            <input type="text" v-model="newMessage" @keyup.enter="sendMessage" placeholder="메시지를 입력하세요...">
-            <button @click="sendMessage">전송</button>
+            <input 
+                type="text" 
+                v-model="newMessage" 
+                @keyup.enter="sendMessage" 
+                placeholder="메시지를 입력하세요..." 
+                :disabled="isLoading">
+            <button 
+                @click="sendMessage" 
+                :disabled="isLoading">
+                전송
+            </button>
         </div>
     </div>
 </template>
@@ -28,28 +38,33 @@ export default {
             messages: [],
             messageId: 0,
             selectedModel: 'basic', // 기본 선택된 모델
+            isLoading: false 
         };
     },
-    methods: {
-        // 사용자 메시지 전송 메서드
-        async sendMessage() {
-            if (this.newMessage.trim()) {
-                this.addMessage(this.newMessage, 'sent'); // 사용자 메시지 추가
-
-                try {
-                    const response = await this.getBotResponse(this.newMessage); // 봇 응답 가져오기
-                    this.addMessage(response, 'received'); // 봇 메시지 추가
-                } catch (error) {
-                    console.error('Error fetching bot response:', error);
-                    this.addMessage('응답을 가져오는 중 오류가 발생했습니다.', 'received');
+        methods: {
+            // 사용자 메시지 전송 메서드
+            async sendMessage() {
+                if (this.newMessage.trim()) {
+                    const userMessage = this.newMessage; // 사용자 메시지 저장
+                    this.addMessage(userMessage, 'sent'); // 사용자 메시지 추가
+                    this.newMessage = ''; // 입력창 즉시 비우기
+                    this.isLoading = true; // 로딩 시작
+            
+                    try {
+                        const response = await this.getBotResponse(userMessage); // 봇 응답 가져오기
+                        this.addMessage(response, 'received'); // 봇 메시지 추가
+                    } catch (error) {
+                        console.error('Error fetching bot response:', error);
+                        this.addMessage('응답을 가져오는 중 오류가 발생했습니다.', 'received');
+                    } finally {
+                        this.isLoading = false; // 로딩 종료
+                    }
+            
+                    this.$nextTick(() => {
+                        this.$refs.chatBox.scrollTop = this.$refs.chatBox.scrollHeight; // 스크롤 하단으로 이동
+                    });
                 }
-
-                this.newMessage = ''; // 입력창 비우기
-                this.$nextTick(() => {
-                    this.$refs.chatBox.scrollTop = this.$refs.chatBox.scrollHeight; // 스크롤 하단으로 이동
-                });
-            }
-        },
+            },
         // API를 호출하여 봇의 응답을 가져오는 메서드
         async getBotResponse(userMessage) {
             // 여기에 실제 API 엔드포인트를 입력하세요
@@ -70,13 +85,27 @@ export default {
                 throw new Error('Network response was not ok');
             }
             
+            //const data = await response.json();
+            
             const data = await response.json();
-            console.log("data",data)
-            return data.answer; // 여기에 API 응답에서 봇 메시지를 적절히 추출하는 로직을 입력하세요
+            const res_answer = JSON.stringify(data.answer, null, 2)
+            console.log("res_answer",res_answer)
+            // console.log("data", JSON.stringify(data, null, 2));
+            // return data.answer;
+
+            return res_answer; // 여기에 API 응답에서 봇 메시지를 적절히 추출하는 로직을 입력하세요
         },
         // 메시지 추가하는 헬퍼 메서드
         addMessage(text, type) {
-            this.messages.push({ id: this.messageId++, text, type });
+            // 받은 메시지에만 줄바꿈 처리 적용
+            let formattedText = text;
+            
+            if (type === 'received' && typeof text === 'string') {
+                // 단순 문자열 치환으로 이스케이프된 줄바꿈 문자를 실제 줄바꿈으로 변환
+                formattedText = text.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+            }
+            
+            this.messages.push({ id: this.messageId++, text: formattedText, type });
         },
     },
 };
@@ -101,6 +130,7 @@ export default {
     overflow-y: auto;
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    background-color: #dedede;
 }
 .message {
     margin: 10px 0;
@@ -108,6 +138,12 @@ export default {
     border-radius: 5px;
     width: 100%;
 
+}
+.message pre {
+    margin: 0;
+    white-space: pre-wrap; /* 긴 줄이 줄바꿈 되도록 함 */
+    font-family: inherit; /* 기본 글꼴 사용 */
+    background: transparent; /* 배경 투명하게 */
 }
 .message.sent {
     float: right;
@@ -150,6 +186,24 @@ export default {
 
 .input-area button:hover {
     background-color: #0056b3;
+}
+#spinner {
+  margin: calc(50% - 25px) auto;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+  border-top-color: white;
+  border-radius: 100%;
+
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  100%
+  {
+    transform: rotate(360deg);
+  }
 }
 
 </style>
