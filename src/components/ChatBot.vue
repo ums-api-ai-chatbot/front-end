@@ -113,7 +113,7 @@ export default {
 
 <style scoped>
 .chat-container {
-    width: 500px;
+    width: 700px;
     max-width: 100%;
     background: white;
     border-radius: 5px;
@@ -188,7 +188,10 @@ export default {
     background-color: #0056b3;
 }
 #spinner {
-  margin: calc(50% - 25px) auto;
+  position: fixed;
+  /* margin: calc(50%-25px) auto; */
+  bottom:50%;
+  margin-left: 25%;
   width: 50px;
   height: 50px;
   border: 3px solid rgba(255, 255, 255, 0.3);
