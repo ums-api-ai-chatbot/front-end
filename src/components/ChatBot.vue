@@ -191,7 +191,7 @@ export default {
   position: fixed;
   /* margin: calc(50%-25px) auto; */
   bottom:50%;
-  margin-left: 25%;
+  left: 49%;
   width: 50px;
   height: 50px;
   border: 3px solid rgba(255, 255, 255, 0.3);
